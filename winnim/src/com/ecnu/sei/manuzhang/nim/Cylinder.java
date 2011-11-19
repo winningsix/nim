@@ -2,22 +2,20 @@ package com.ecnu.sei.manuzhang.nim;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class Torus extends Grid {
-	
-	public Torus(GL10 gl, int uSteps, int vSteps, float majorRadius, float minorRadius) {
-		generateTorus(gl, uSteps, vSteps, majorRadius, minorRadius);
+public class Cylinder extends Grid {
+
+	public Cylinder(GL10 gl, int uSteps, int vSteps, float radius, float height) {
+		generateCylinder(gl, uSteps, vSteps, radius, height);
 	}
 
-	public void drawTorus(GL10 gl) {
+	public void drawCylinder(GL10 gl) {
 		super.draw(gl);
 	}
 
-	// x(u,v) = (R + r * cos(u)) * cos(v)
-	// y(u,v) = (R + r * cos(u)) * sin(v)
-	// z(u,v) = r * sin(u)
-	// r is the radius of the circle
-	// R is the distance from the center of torus to the center of the circle
-	private void generateTorus(GL10 gl, int uSteps, int vSteps, float majorRadius, float minorRadius) {
+	// x(u,v) = r * cos(v)
+	// y(u,v) = r * sin(V)
+	// z(u,v) = r * tan(u)
+	private void generateCylinder(GL10 gl, int uSteps, int vSteps, float radius, float height) {
 		super.initGrid(uSteps + 1, vSteps + 1);
 		for (int j = 0; j <= vSteps; j++) {
 			double angleV = Math.PI * 2 * j / vSteps;
@@ -27,10 +25,11 @@ public class Torus extends Grid {
 				double angleU = Math.PI * 2 * i / uSteps;
 				float cosU = (float) Math.cos(angleU);
 				float sinU = (float) Math.sin(angleU);
-				float d = majorRadius + minorRadius * cosU;
+				float tanU = (float) Math.tan(angleU);
+				float d = radius;
 				float x = d * cosV;
 				float y = d * (-sinV);
-				float z = minorRadius * sinU;
+				float z = d * tanU;
 
 				float nx = cosV * cosU;
 				float ny = -sinV * cosU;

@@ -67,7 +67,7 @@ class GameView extends GLSurfaceView {
         setDebugFlags(DEBUG_CHECK_GL_ERROR | DEBUG_LOG_GL_CALLS);
 		mRenderer = new GameViewRenderer();
 		setRenderer(mRenderer);
-		setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
 	
 }

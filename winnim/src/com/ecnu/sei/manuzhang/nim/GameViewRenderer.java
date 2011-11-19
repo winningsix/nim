@@ -8,7 +8,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
 public class GameViewRenderer implements GLSurfaceView.Renderer {
-	private Torus torus;
+	private Torus mTorus;
+	private Cylinder mCylinder;
+	
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		checkGLError(gl);
@@ -18,12 +20,12 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		gl.glLoadIdentity();
 
 		GLU.gluLookAt(gl, 0f, 0f, -5.0f, 0f, 0f, 0f, 0f, 1.0f, 0f);
-		gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);
-
+        gl.glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);
 		checkGLError(gl);
 
-		torus.drawTorus(gl);
-
+		mTorus.drawTorus(gl);
+        mCylinder.drawCylinder(gl);
+        
 		checkGLError(gl);
 	}
 
@@ -43,8 +45,9 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		checkGLError(gl);
-		torus = new Torus(gl, 60, 60, 1.0f, 0.25f);
-
+		mTorus = new Torus(gl, 60, 60, 1.0f, 0.25f);
+        mCylinder = new Cylinder(gl, 90, 90, 0.3f, 0.3f);
+        		
 		// set the background frame color
 		gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
