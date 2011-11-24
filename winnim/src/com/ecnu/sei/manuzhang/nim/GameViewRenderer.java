@@ -27,10 +27,7 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-
-		TorusInfo tmpTorusInfo;
-		float x, y;
-		FloatBuffer floatBuffer;
+		
 		GLU.gluLookAt(gl, 0f, 0f, 5.0f, 0f, 0f, 0f, 0f, 1.0f, 0f);
 		gl.glRotatef(-85.0f, 1.0f, 0.0f, 0.0f);
 
@@ -78,6 +75,8 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		gl.glPopMatrix();
 
 		checkGLError(gl);
+
+//		OpenGLJNILib.onDrawFrame();
 	}
 
 	@Override
@@ -91,6 +90,8 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		gl.glLoadIdentity();
 		gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
 		checkGLError(gl);
+
+//		OpenGLJNILib.onSurfaceChanged(width, height);
 	}
 
 	@Override
@@ -103,6 +104,8 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
 		checkGLError(gl);
+
+//		OpenGLJNILib.onSurfaceCreated();
 	}
 
 	public static void checkGLError(GL gl) {
@@ -138,12 +141,4 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 	
-	// Native implementation
-	static {
-		System.loadLibrary("shape");
-	}
-	
-	public static native void draw();
-	public static native void generateTorus(int uSteps, int vSteps, float majorRadius, float minorRadius);
-	public static native void generateCylinder(int uSteps, int vSteps, float radius, float height);
 }

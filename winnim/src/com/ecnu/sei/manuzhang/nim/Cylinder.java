@@ -9,7 +9,7 @@ public class Cylinder extends Grid {
 	}
 
 	public void drawCylinder(GL10 gl) {
-		super.draw(gl);
+		draw(gl);
 	}
 
 	// x(u,v) = r * cos(v)

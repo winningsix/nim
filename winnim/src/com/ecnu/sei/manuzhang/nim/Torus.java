@@ -5,11 +5,11 @@ import javax.microedition.khronos.opengles.GL10;
 public class Torus extends Grid {
 	
 	public Torus(GL10 gl, int uSteps, int vSteps, float majorRadius, float minorRadius) {
-		generateTorus(gl, uSteps, vSteps, majorRadius, minorRadius);
+	    generateTorus(gl, uSteps, vSteps, majorRadius, minorRadius);
 	}
 
 	public void drawTorus(GL10 gl) {
-		super.draw(gl);
+		draw(gl);
 	}
 
 	// x(u,v) = (R + r * cos(u)) * cos(v)

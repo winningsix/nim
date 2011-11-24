@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 public class GameView extends GLSurfaceView {
 	private GameViewRenderer mRenderer;
     private static final int MSG_GRAY = 1;
-    private final Handler mHandler = new Handler(new MyHandler());
+  //  private final Handler mHandler = new Handler(new MyHandler());
     
     private State mCurrentPlayer = State.UNKNOWN;
     private State mWinner = State.EMPTY;
