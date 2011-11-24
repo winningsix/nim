@@ -26,21 +26,27 @@ public class Cylinder extends Grid {
 				float cosU = (float) Math.cos(angleU);
 				float sinU = (float) Math.sin(angleU);
 				float tanU = (float) Math.tan(angleU);
+
 				float d = radius;
-				float x = d * cosV;
-				float y = d * (-sinV);
 				float z = d * tanU;
 
-				float nx = cosV * cosU;
-				float ny = -sinV * cosU;
-				float nz = sinU;
+				if (z >= -height / 2 && z <= height / 2)
+				{
+					float x = d * cosV;
+					float y = d * (-sinV);
 
-				float length = (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
-				nx /= length;
-				ny /= length;
-				nz /= length;
 
-				super.set(i, j, x, y, z, nx, ny, nz);
+					float nx = cosV * cosU;
+					float ny = -sinV * cosU;
+					float nz = sinU;
+
+					float length = (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
+					nx /= length;
+					ny /= length;
+					nz /= length;
+
+					super.set(i, j, x, y, z, nx, ny, nz);
+				}
 			}
 		}
 		super.createBufferObjects(gl);

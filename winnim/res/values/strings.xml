@@ -6,4 +6,10 @@
     <string name="continue_label">Continue</string>
     <string name="tutorial_label">Tutorial</string>
     <string name="about_label">About Nim</string>
+    
+    <string name="player1_turn">Your turn</string>
+    <string name="player2_turn">Computer"'"s turn</string>
+    <string name="button_text">I"'"m done</string>
+    <string name="player1_win">You win</string>
+    <string name="player2_win">Computer win</string>
 </resources>

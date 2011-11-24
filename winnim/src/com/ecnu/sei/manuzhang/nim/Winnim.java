@@ -9,7 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class Winnim extends Activity implements OnClickListener {
-	private final String TAG = Winnim.class.getSimpleName();
+	private static final String TAG = Winnim.class.getSimpleName();
 	
     /** Called when the activity is first created. */
     @Override
@@ -71,7 +71,7 @@ public class Winnim extends Activity implements OnClickListener {
     	switch(view.getId()) {
     	case R.id.new_game_button:
     		Log.d("new_game", "new game button clicked");
-    		startActivity(new Intent(this, Game.class));
+    		startActivity(new Intent(this, GameActivity.class));
     		break;
     	case R.id.continue_button:
     		break;
