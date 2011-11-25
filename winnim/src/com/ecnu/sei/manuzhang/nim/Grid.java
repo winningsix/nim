@@ -8,22 +8,22 @@ import java.nio.ShortBuffer;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
-	/** A grid is a topologically rectangular array of vertices.
-	 *
-	 * This grid class is customized for the vertex data required for this
-	 * example.
-	 *
-	 * The vertex and index data are held in VBO objects because on most
-	 * GPUs VBO objects are the fastest way of rendering static vertex
-	 * and index data.
-	 *
-	 */
+/** A grid is a topologically rectangular array of vertices.
+ *
+ * This grid class is customized for the vertex data required for this
+ * example.
+ *
+ * The vertex and index data are held in VBO objects because on most
+ * GPUs VBO objects are the fastest way of rendering static vertex
+ * and index data.
+ *
+ */
 
 public class Grid {
 
 	protected int mVertexBufferObjectId;
 	protected int mIndexBufferObjectId;
-	
+
 	// These buffers are used to hold the vertex and index data while
 	// constructing the grid. Once createBufferObjects() is called
 	// the buffers are nulled out to save memory.
@@ -93,7 +93,7 @@ public class Grid {
 			}
 		}
 	}
-	
+
 	protected void set(int i, int j, float x, float y, float z, float nx, float ny, float nz) {
 		if (i < 0 || i >= mW) {
 			throw new IllegalArgumentException("i");
@@ -112,12 +112,12 @@ public class Grid {
 		mVertexBuffer.put(ny);
 		mVertexBuffer.put(nz);
 	}
-	
+
 	protected void createBufferObjects(GL10 gl) {
 		GameViewRenderer.checkGLError(gl);
 		// Generate vertex and element buffer IDs
 		int[] vboIds = new int[2];
-	    GL11 gl11 = (GL11) gl;
+		GL11 gl11 = (GL11) gl;
 		gl11.glGenBuffers(2, vboIds, 0);
 		mVertexBufferObjectId = vboIds[0];
 		mIndexBufferObjectId = vboIds[1];
@@ -141,18 +141,15 @@ public class Grid {
 	protected void draw(GL10 gl) {
 		GameViewRenderer.checkGLError(gl);
 		GL11 gl11 = (GL11) gl;
-
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, mVertexBufferObjectId);
-		gl11.glVertexPointer(3, GL10.GL_FLOAT, Size.VERTEX_SIZE, 0);
-
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-		gl11.glNormalPointer(GL10.GL_FLOAT, Size.VERTEX_SIZE, Size.VERTEX_NORMAL_BUFFER_INDEX_OFFSET * Size.FLOAT_SIZE);
-
 		gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, mIndexBufferObjectId);
-		
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+
+		gl11.glVertexPointer(3, GL10.GL_FLOAT, Size.VERTEX_SIZE, 0);
+		gl11.glNormalPointer(GL10.GL_FLOAT, Size.VERTEX_SIZE, Size.VERTEX_NORMAL_BUFFER_INDEX_OFFSET * Size.FLOAT_SIZE);
 		gl11.glDrawElements(GL10.GL_TRIANGLES, mIndexCount, GL10.GL_UNSIGNED_SHORT, 0);
-		
+
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);

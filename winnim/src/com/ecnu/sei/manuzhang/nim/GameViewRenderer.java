@@ -22,7 +22,7 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 	private float distance = 1.0f;
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		checkGLError(gl);
+/*		checkGLError(gl);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
@@ -74,14 +74,14 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		mTorus.drawTorus(gl);
 		gl.glPopMatrix();
 
-		checkGLError(gl);
+		checkGLError(gl);*/
 
-//		OpenGLJNILib.onDrawFrame();
+		OpenGLJNILib.onDrawFrame();
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		checkGLError(gl);
+/*		checkGLError(gl);
 		gl.glViewport(0, 0, width, height);
 
 		// make adjustments for screen ratio
@@ -89,23 +89,23 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
-		checkGLError(gl);
+		checkGLError(gl);*/
 
-//		OpenGLJNILib.onSurfaceChanged(width, height);
+		OpenGLJNILib.onSurfaceChanged(width, height);
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		checkGLError(gl);
+/*		checkGLError(gl);
 		mTorus = new Torus(gl, 60, 60, 0.5f, 0.1f);
 		mCylinder = new Cylinder(gl, 60, 60, 0.3f, 18.0f);
 
 		// set the background frame color
 		gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
-		checkGLError(gl);
+		checkGLError(gl);*/
 
-//		OpenGLJNILib.onSurfaceCreated();
+		OpenGLJNILib.onSurfaceCreated();
 	}
 
 	public static void checkGLError(GL gl) {
