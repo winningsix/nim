@@ -153,12 +153,12 @@ void generateTorus(GLint uSteps, GLint vSteps, GLfloat majorRadius, GLfloat mino
 	initGrid(uSteps + 1, vSteps + 1);
 	for (j = 0; j <= vSteps; j++)
 	{
-		double angleV = PI * 2 * j / (vSteps - 2);
+		double angleV = PI * 2 * j / (vSteps);
 		GLfloat cosV = (GLfloat) cos(angleV);
 		GLfloat sinV = (GLfloat) sin(angleV);
 		for (i = 0; i <= uSteps; i++)
 		{
-			double angleU = PI * 2 * i / (uSteps - 2);
+			double angleU = PI * 2 * i / (uSteps);
 			GLfloat cosU = (GLfloat) cos(angleU);
 			GLfloat sinU = (GLfloat) sin(angleU);
 			GLfloat d = majorRadius + minorRadius * cosU;
@@ -273,7 +273,7 @@ void onDrawFrame()
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 
 	drawCylinder();
-	glColor4f(1.0f, 1.0f, 0.0f, 0.5f);
+	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
 	drawTorus();
 	glTranslatef(0.0f, 0.0f, distance);
 	drawTorus();
@@ -289,7 +289,7 @@ void onDrawFrame()
 	glPushMatrix();
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 	drawCylinder();
-	glColor4f(1.0f, 1.0f, 0.0f, 0.5f);
+	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
 	glTranslatef(0.0f, 0.0f, distance);
 	drawTorus();
 	glTranslatef(0.0f, 0.0f, -distance * 2);
@@ -301,7 +301,7 @@ void onDrawFrame()
 	glTranslatef(2.5 * ratio, 0.0f, 0.0f);
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 	drawCylinder();
-	glColor4f(1.0f, 1.0f, 0.0f, 0.5f);
+	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
 	drawTorus();
 	glTranslatef(0.0f, 0.0f, distance);
 	drawTorus();
@@ -327,6 +327,9 @@ void onSurfaceChanged(int width, int height)
 
 void onSurfaceCreated()
 {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	generateTorus(80, 80, 0.5f, 0.1f);
 	generateCylinder(80, 80, 0.3f, 18.0f);
 

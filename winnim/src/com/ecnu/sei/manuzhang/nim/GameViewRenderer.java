@@ -1,29 +1,25 @@
 package com.ecnu.sei.manuzhang.nim;
 
-import java.nio.FloatBuffer;
+
 import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
 
 import android.opengl.GLSurfaceView;
-import android.opengl.GLU;
 
 public class GameViewRenderer implements GLSurfaceView.Renderer {
 	private static final String TAG = GameViewRenderer.class.getSimpleName();
-	private Torus mTorus;
-	private Cylinder mCylinder;
+
 	float[] origin = new float[]{0.0f, 0.0f, 0.0f};
 	public static ArrayList<TorusInfo> mTorusList = new ArrayList<TorusInfo>();
 
-	private float ratio;
-	private float distance = 1.0f;
+
 	@Override
 	public void onDrawFrame(GL10 gl) {
-/*		checkGLError(gl);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		checkGLError(gl);
+/*		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -81,8 +77,8 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-/*		checkGLError(gl);
-		gl.glViewport(0, 0, width, height);
+		checkGLError(gl);
+/*		gl.glViewport(0, 0, width, height);
 
 		// make adjustments for screen ratio
 		ratio = (float) width / height;
@@ -96,8 +92,8 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-/*		checkGLError(gl);
-		mTorus = new Torus(gl, 60, 60, 0.5f, 0.1f);
+		checkGLError(gl);
+/*		mTorus = new Torus(gl, 60, 60, 0.5f, 0.1f);
 		mCylinder = new Cylinder(gl, 60, 60, 0.3f, 18.0f);
 
 		// set the background frame color

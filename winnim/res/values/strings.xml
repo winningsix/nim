@@ -12,4 +12,12 @@
     <string name="button_text">I"'"m done</string>
     <string name="player1_win">You win</string>
     <string name="player2_win">Computer win</string>
+    
+    <string name="settings_label">Settings...</string>
+    
+    <string name="button_plus_text">+</string>
+    <string name="button_minus_text">-</string>
+    <string name="default1">3</string>
+    <string name="default2">4</string>
+    <string name="default3">5</string>
 </resources>
