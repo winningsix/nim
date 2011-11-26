@@ -20,7 +20,10 @@ public class Winnim extends Activity {
 	private static final String TAG = Winnim.class.getSimpleName();
 	MyOnClickListener mOnClickListener = new MyOnClickListener();
 	View mDialogLayout;
-	
+	Intent mIntent;
+	int mMax = 10;
+	int mMin = 0;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,8 @@ public class Winnim extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-
+		// can't be instantiated globally
+        mIntent = new Intent(this, GameActivity.class);
 		// setup button and button listener
 		Button newGameButton = (Button) findViewById(R.id.new_game_button);
 		newGameButton.setOnClickListener(mOnClickListener);
@@ -134,7 +138,7 @@ public class Winnim extends Activity {
 	}
 
 	private void startGame() {
-		startActivity(new Intent(this, GameActivity.class));
+		startActivity(mIntent);
 	}
 
 	class MyOnClickListener implements OnClickListener {
@@ -143,12 +147,11 @@ public class Winnim extends Activity {
 		public void onClick(View view) {
 			EditText editText;
 			int text;
-			
+
 			switch(view.getId()) {
 			case R.id.new_game_button:
 				Log.d("new_game", "new game button clicked");
 				openNewGameDialog();
-				//startActivity(new Intent(Winnim.this, GameActivity.class));
 				break;
 			case R.id.continue_button:
 				break;
@@ -158,37 +161,81 @@ public class Winnim extends Activity {
 				break;
 			case R.id.button_plus1:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text1);
-				text = Integer.parseInt(editText.getText().toString());
-                editText.setText(Integer.toString(text + 1));
+				text = Integer.parseInt(editText.getText().toString()) + 1;
+				if (inLimit(text))
+					editText.setText(Integer.toString(text));
+				else
+					text = text - 1;
+				mIntent.putExtra(GameActivity.NUM_1, text);
 				break;
 			case R.id.button_minus1:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text1);
-				text = Integer.parseInt(editText.getText().toString());
-                editText.setText(Integer.toString(text - 1));
+				text = Integer.parseInt(editText.getText().toString()) - 1;
+				if (inLimit(text))
+					editText.setText(Integer.toString(text));
+				else
+					text = text + 1;
+				mIntent.putExtra(GameActivity.NUM_1, text);
 				break;
 			case R.id.button_plus2:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text2);
-				text = Integer.parseInt(editText.getText().toString());
-                editText.setText(Integer.toString(text + 1));
+				text = Integer.parseInt(editText.getText().toString()) + 1;
+				if (inLimit(text))
+					editText.setText(Integer.toString(text));
+				else
+					text = text - 1;
+				mIntent.putExtra(GameActivity.NUM_2, text);
 				break;
 			case R.id.button_minus2:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text2);
-				text = Integer.parseInt(editText.getText().toString());
-                editText.setText(Integer.toString(text - 1));
+				text = Integer.parseInt(editText.getText().toString()) - 1;
+				if (inLimit(text))
+					editText.setText(Integer.toString(text));
+				else 
+					text = text + 1;
+				mIntent.putExtra(GameActivity.NUM_2, text);
 				break;
 			case R.id.button_plus3:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text3);
-				text = Integer.parseInt(editText.getText().toString());
-                editText.setText(Integer.toString(text + 1));
+				text = Integer.parseInt(editText.getText().toString()) + 1;
+				if (inLimit(text))
+					editText.setText(Integer.toString(text));
+				else
+					text = text - 1;
+				mIntent.putExtra(GameActivity.NUM_3, text);
 				break;
 			case R.id.button_minus3:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text3);
-				text = Integer.parseInt(editText.getText().toString());
-                editText.setText(Integer.toString(text - 1));
+				text = Integer.parseInt(editText.getText().toString()) - 1;
+				if (inLimit(text))
+					editText.setText(Integer.toString(text));
+				else
+					text = text + 1;
+				mIntent.putExtra(GameActivity.NUM_3, text);
 				break;
 			}
 
 		}
 
+		private boolean inLimit(int text) {
+			return text <= mMax && text >= mMin;
+		}
 	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

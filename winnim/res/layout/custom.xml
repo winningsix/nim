@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="5dip"
+    android:orientation="horizontal" >
+
+    <LinearLayout 
+        android:layout_width="90dip"
+        android:layout_height="fill_parent"
+        android:layout_gravity="left" 
+        android:orientation="vertical">
+        
+        <Button
+            android:id="@+id/button_plus1"
+            android:text="@string/button_plus_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+        />
+        <EditText
+            android:id="@+id/edit_text1"
+            android:text="@string/default1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+        />
+        <Button
+            android:id="@+id/button_minus1"
+            android:text="@string/button_minus_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+        />
+            
+    </LinearLayout>
+    <LinearLayout 
+        android:layout_width="90dip"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal" 
+        android:orientation="vertical">
+        
+        <Button
+            android:id="@+id/button_plus2"
+            android:text="@string/button_plus_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+        />
+        <EditText
+            android:id="@+id/edit_text2"
+            android:text="@string/default2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+        />
+        <Button
+            android:id="@+id/button_minus2"
+            android:text="@string/button_minus_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+        />
+            
+    </LinearLayout>
+    <LinearLayout 
+        android:layout_width="90dip"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right" 
+        android:orientation="vertical">
+        
+        <Button
+            android:id="@+id/button_plus3"
+            android:text="@string/button_plus_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+        />
+        <EditText
+            android:id="@+id/edit_text3"
+            android:text="@string/default3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+        />
+        <Button
+            android:id="@+id/button_minus3"
+            android:text="@string/button_minus_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+        />
+            
+    </LinearLayout>
+
+</LinearLayout>

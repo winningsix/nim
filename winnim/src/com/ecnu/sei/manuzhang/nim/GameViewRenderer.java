@@ -11,7 +11,10 @@ import android.opengl.GLSurfaceView;
 
 public class GameViewRenderer implements GLSurfaceView.Renderer {
 	private static final String TAG = GameViewRenderer.class.getSimpleName();
-
+    public static int num_1;
+    public static int num_2;
+    public static int num_3;
+    
 	float[] origin = new float[]{0.0f, 0.0f, 0.0f};
 	public static ArrayList<TorusInfo> mTorusList = new ArrayList<TorusInfo>();
 
@@ -72,7 +75,7 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 
 		checkGLError(gl);*/
 
-		OpenGLJNILib.onDrawFrame();
+		OpenGLJNILib.onDrawFrame(num_1, num_2, num_3);
 	}
 
 	@Override

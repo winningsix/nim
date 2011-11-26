@@ -16,7 +16,11 @@ public class GameActivity extends Activity {
 	private static final String TAG = GameActivity.class.getSimpleName();
 	private static final String EXTRA_START_PLAYER = 
 			"com.ecnu.sei.manuzhang.nim.GameActivity.EXTRA_START_PLAYER";
-
+    
+	public static final String NUM_1 = "com.ecnu.sei.manuzhang.nim.num1";
+	public static final String NUM_2 = "com.ecnu.sei.manuzhang.nim.num2";
+	public static final String NUM_3 = "com.ecnu.sei.manuzhang.nim.num3";
+	
 	private static final int MSG_COMPUTER_TURN = 1;
 	private static final long COMPUTER_DELAY_MS = 500;
 
@@ -67,6 +71,10 @@ public class GameActivity extends Activity {
 		Log.d(TAG, "game created");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
+        
+		GameViewRenderer.num_1 = getIntent().getIntExtra(NUM_1, Integer.parseInt(getString(R.string.default1)));
+		GameViewRenderer.num_2 = getIntent().getIntExtra(NUM_2, Integer.parseInt(getString(R.string.default2)));
+		GameViewRenderer.num_3 = getIntent().getIntExtra(NUM_3, Integer.parseInt(getString(R.string.default3)));
 
 		mGameView = (GameView) findViewById(R.id.game_view);
 		mInfoView = (TextView) findViewById(R.id.info_turn);

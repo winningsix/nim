@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib
  * Method:    onDrawFrame
- * Signature: ()V
+ * Signature: (III)V
  */
 JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onDrawFrame
-  (JNIEnv *, jclass);
+  (JNIEnv *, jclass, jint, jint, jint);
 
 /*
  * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib

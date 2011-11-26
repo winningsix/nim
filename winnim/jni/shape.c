@@ -14,7 +14,6 @@
 #define IndexType      GLushort
 
 GLfloat ratio;
-GLfloat distance = 1.0f;
 const GLfloat PI = 3.1415926;
 
 GLint mW;
@@ -247,17 +246,34 @@ void draw(GLuint mVertexBufferObjectId, GLuint mIndexBufferObjectId)
 
 }
 
-void drawTorus()
+void drawTorus(int num)
 {
+	int i;
+	if (num == 0)
+		return;
+	GLfloat distance = 5.0 / num;
 	draw(buffer[TorusVertex], buffer[TorusIndex]);
+	for (i = 0; i < num / 2; i++)
+	{
+	glTranslatef(0.0f, 0.0f, distance);
+	draw(buffer[TorusVertex], buffer[TorusIndex]);
+	}
+	glTranslatef(0.0f, 0.0f, -distance * (num / 2 + 1));
+	draw(buffer[TorusVertex], buffer[TorusIndex]);
+	for (i = 0; i < (num - 1) / 2 - 1; i++)
+	{
+	glTranslatef(0.0f, 0.0f, -distance);
+	draw(buffer[TorusVertex], buffer[TorusIndex]);
+	}
 }
 
 void drawCylinder()
 {
+
 	draw(buffer[CylinderVertex], buffer[CylinderIndex]);
 }
 
-void onDrawFrame()
+void onDrawFrame(int num_1, int num_2, int num_3)
 {
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -274,15 +290,7 @@ void onDrawFrame()
 
 	drawCylinder();
 	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, distance);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, distance);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, -distance * 3);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, -distance);
-	drawTorus();
+    drawTorus(num_1);
 	glPopMatrix();
 
 	// middle with 2 toruses
@@ -290,10 +298,7 @@ void onDrawFrame()
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 	drawCylinder();
 	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
-	glTranslatef(0.0f, 0.0f, distance);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, -distance * 2);
-	drawTorus();
+	drawTorus(num_2);
 	glPopMatrix();
 
 	// right with 4 torus
@@ -302,13 +307,7 @@ void onDrawFrame()
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 	drawCylinder();
 	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, distance);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, distance);
-	drawTorus();
-	glTranslatef(0.0f, 0.0f, -distance * 3);
-	drawTorus();
+    drawTorus(num_3);
 	glPopMatrix();
 	glFlush();
 }
@@ -343,9 +342,9 @@ void onSurfaceCreated()
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onDrawFrame
-(JNIEnv* env, jclass obj)
+(JNIEnv* env, jclass obj, jint num_1, jint num_2, jint num_3)
 {
-	onDrawFrame();
+	onDrawFrame(num_1, num_2, num_3);
 }
 
 /*
