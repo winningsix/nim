@@ -20,15 +20,29 @@ public class GameView extends GLSurfaceView {
     
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		float x = event.getXPrecision();
-		float y = event.getYPrecision();
+		float width = getWidth();
+		float height = getHeight();
+		float x = (event.getX() - width / 2) / (height / 2);
+		float y = (height / 2 - event.getY()) / (height / 2);
 		
-		switch (event.getActionMasked()) {
-		case MotionEvent.ACTION_DOWN:
-			
-			break;
+		int action = event.getActionMasked();
+		
+		if (action == MotionEvent.ACTION_DOWN)
+			return true;
+		else if (action == MotionEvent.ACTION_UP) {
+			int selected = OpenGLJNILib.onTorus(x, y);
+/*			if (selected >= 1) {
+				OpenGLJNILib.onDrawFrame(GameViewRenderer.num_1,
+						GameViewRenderer.num_2,
+						GameViewRenderer.num_3,
+						selected);
+			} */
 		}
-		return true;
+			OpenGLJNILib.onDrawFrame(GameViewRenderer.num_1,
+						GameViewRenderer.num_2,
+						GameViewRenderer.num_3,
+						3);
+			return true;
 	}
 	
 

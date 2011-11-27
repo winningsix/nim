@@ -1,27 +1,21 @@
 package com.ecnu.sei.manuzhang.nim;
 
-
-import java.util.ArrayList;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 public class GameViewRenderer implements GLSurfaceView.Renderer {
 	private static final String TAG = GameViewRenderer.class.getSimpleName();
     public static int num_1;
     public static int num_2;
     public static int num_3;
-    
-	float[] origin = new float[]{0.0f, 0.0f, 0.0f};
-	public static ArrayList<TorusInfo> mTorusList = new ArrayList<TorusInfo>();
-
-
+   
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		checkGLError(gl);
+		Log.d(TAG, "onDrawFrame");
 /*		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
@@ -75,12 +69,12 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 
 		checkGLError(gl);*/
 
-		OpenGLJNILib.onDrawFrame(num_1, num_2, num_3);
+		OpenGLJNILib.onDrawFrame(num_1, num_2, num_3, 0);
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		checkGLError(gl);
+		Log.d(TAG, "onSurfaceChanged");
 /*		gl.glViewport(0, 0, width, height);
 
 		// make adjustments for screen ratio
@@ -95,7 +89,7 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		checkGLError(gl);
+		Log.d(TAG, "onSurfaceCreated");
 /*		mTorus = new Torus(gl, 60, 60, 0.5f, 0.1f);
 		mCylinder = new Cylinder(gl, 60, 60, 0.3f, 18.0f);
 
@@ -113,31 +107,4 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 			throw new RuntimeException("GLError 0x" + Integer.toHexString(error));
 		}
 	} 
-	
-	class TorusInfo {
-		private float coordX;
-		private float coordY;
-		private float[] coordColor = new float[4];
-		
-		public TorusInfo(float[] xy) {
-			if (xy.length != 2) {
-				throw new RuntimeException("TorusInfo need exactly two elements: x and y");
-			}
-			
-			coordX = xy[0];
-			coordY = xy[1];
-		}
-		
-		public TorusInfo(float x, float y) {
-			coordX = x;
-			coordY = y;
-		}
-		
-		public TorusInfo(float x, float y, float[] color) {
-			coordX = x;
-			coordY = y;
-			coordColor = color;
-		}
-	}
-	
 }

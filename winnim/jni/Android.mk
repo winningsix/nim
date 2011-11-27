@@ -5,5 +5,5 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := shape
 LOCAL_C_INCLUDES := /usr/include
 LOCAL_SRC_FILES := shape.c
-LOCAL_LDLIBS := -lGLESv1_CM
+LOCAL_LDLIBS := -lGLESv1_CM -llog
 include $(BUILD_SHARED_LIBRARY)

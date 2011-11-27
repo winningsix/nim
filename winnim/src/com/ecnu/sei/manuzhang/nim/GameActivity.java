@@ -176,10 +176,6 @@ public class GameActivity extends Activity {
 	}
 
 	private boolean checkGameFinished(State player) {
-		if (GameViewRenderer.mTorusList.isEmpty()) {
-			setFinished(player);
-			return true;
-		}
 
 		return false;
 	}

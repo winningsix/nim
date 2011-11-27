@@ -23,7 +23,8 @@
  /usr/local/android-ndk-r7/platforms/android-14/arch-arm/usr/include/GLES/gl.h \
  /usr/local/android-ndk-r7/platforms/android-14/arch-arm/usr/include/GLES/glplatform.h \
  /usr/local/android-ndk-r7/platforms/android-14/arch-arm/usr/include/KHR/khrplatform.h \
- /usr/include/stdint.h /usr/include/bits/wchar.h
+ /usr/include/stdint.h /usr/include/bits/wchar.h \
+ /usr/local/android-ndk-r7/platforms/android-14/arch-arm/usr/include/android/log.h
 
 /home/manuzhang/git/winnim/winnim/jni/com_ecnu_sei_manuzhang_nim_OpenGLJNILib.h:
 
@@ -116,3 +117,5 @@
 /usr/include/stdint.h:
 
 /usr/include/bits/wchar.h:
+
+/usr/local/android-ndk-r7/platforms/android-14/arch-arm/usr/include/android/log.h:
