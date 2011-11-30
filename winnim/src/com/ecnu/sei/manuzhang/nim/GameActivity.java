@@ -21,17 +21,69 @@ public class GameActivity extends Activity {
 	public static final String NUM_3 = "com.ecnu.sei.manuzhang.nim.num3";
 
 	private static final int MSG_COMPUTER_TURN = 1;
-	private static final long COMPUTER_DELAY_MS = 500;
-
+	private static final long COMPUTER_DELAY_MS = 2500;
+    private static final long PLAYER_DELAY_MS = 1500;
+    
 	private Handler mHandler = new Handler(new Callback() {
 
 		@Override
 		public boolean handleMessage(Message msg) {
 			if (msg.what == MSG_COMPUTER_TURN) {
+				int num_1 = GameViewRenderer.num_1;
+				int num_2 = GameViewRenderer.num_2;
+				int num_3 = GameViewRenderer.num_3;
+				if (getNim(num_1, num_2, num_3) == 0) { // we are almost doomed
+					if (num_1 != 0)
+						num_1 -= 1;
+					else if (num_2 != 0)
+						num_2 -= 1;
+					else if (num_3 != 0)
+						num_3 -= 1;
+				}
+				else { // showtime
+					if (num_1 == num_2)
+						num_3 = 0;
+					else if (num_1 == num_3)
+						num_2 = 0;
+					else if (num_2 == num_3)
+						num_1 = 0;
+					else {
+						int tmp_1 = num_1;
+						int tmp_2 = num_2;
+						int tmp_3 = num_3;
+						
+					    while (getNim(tmp_1, tmp_2, tmp_3) != 0 && tmp_1 != 0) 
+					    	tmp_1 -= 1;
+					    if (tmp_1 == 0) {
+					    	tmp_1 = num_1;
+					    	while (getNim(tmp_1, tmp_2, tmp_3) !=0 && tmp_2 != 0)
+					    		tmp_2 -= 1;
+					    	if (tmp_2 == 0) {
+					    		tmp_2 = num_2;
+					    		while (getNim(tmp_1, tmp_2, tmp_3) != 0 && tmp_3 != 0)
+					    			tmp_3 -= 1;
+					    	}
+					    }
+					    num_1 = tmp_1;
+					    num_2 = tmp_2;
+					    num_3 = tmp_3;
+					}
+				}					
+				mGameView.setComputerMove(num_1, num_2, num_3);
+                try {
+					Thread.sleep(PLAYER_DELAY_MS);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				finishTurn();
 				return true;
 			}
 			return false;
+		}
+
+		private int getNim(int a, int b, int c) {
+			return (a ^ b) ^ c;
 		}
 
 	});
@@ -92,7 +144,13 @@ public class GameActivity extends Activity {
 				if (player == State.WIN) {
 					GameActivity.this.finish();
 				} else if (player == State.PLAYER1) {
-				    mGameView.setOneStep();
+					mGameView.setOneStep();
+					try {
+						Thread.sleep(COMPUTER_DELAY_MS);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					finishTurn();
 				}
 

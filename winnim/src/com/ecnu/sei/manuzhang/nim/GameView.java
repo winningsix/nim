@@ -11,13 +11,10 @@ import com.ecnu.sei.manuzhang.nim.GameActivity.State;
 
 public class GameView extends GLSurfaceView {
 	private GameViewRenderer mRenderer;
-	private static final int MSG_GRAY = 1;
-	//  private final Handler mHandler = new Handler(new MyHandler());
 
 	private State mCurrentPlayer = State.UNKNOWN;
 	private State mWinner = State.EMPTY;
 
-	private boolean mGrayDisplayOff;
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
@@ -36,6 +33,11 @@ public class GameView extends GLSurfaceView {
 				GameViewRenderer.mSelected = selected;
 				requestRender();
 				GameActivity.getButton().setEnabled(true);
+			}
+			else if (GameViewRenderer.mSelected != 0) {
+				GameViewRenderer.mSelected = 0;
+				requestRender();
+				GameActivity.getButton().setEnabled(false);
 			}
 		}
 
@@ -77,11 +79,23 @@ public class GameView extends GLSurfaceView {
 		GameViewRenderer.num_3 = num_3;
 		GameViewRenderer.mNum = num_1 + num_2 + num_3;
 		GameViewRenderer.mSelected = 0;
-		GameViewRenderer.mTorusMask.clear();
+		
 		requestRender();
+		GameViewRenderer.mTorusMask.clear();
 		mRenderer.setTorusMask();
 	}
 
+	public void setComputerMove(int num_1, int num_2, int num_3) {
+		GameViewRenderer.num_1 = num_1;
+		GameViewRenderer.num_2 = num_2;
+		GameViewRenderer.num_3 = num_3;
+		GameViewRenderer.mNum = num_1 + num_2 + num_3;
+		
+		requestRender();
+	    GameViewRenderer.mTorusMask.clear();
+		mRenderer.setTorusMask();
+	}
+	
 	public State getCurrentPlayer() {
 		return mCurrentPlayer;
 	}
