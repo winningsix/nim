@@ -44,18 +44,6 @@ GLuint buffer[BUFFER_NUMS];
 struct Vertex* mVertexBuffer;
 IndexType* mIndexBuffer;
 
-
-// for a torus of r and R
-struct TorusMask
-{
-	GLfloat x1, z1; // (-(R + r), R + r)
-	//	GLfloat x2, y2; // ((R + r), R + r)
-	GLfloat x3, z3; // ((R + r), -(R + r))
-	//	GLfloat x4, y4; // (-(R + r), -(R + r))
-};
-struct TorusMask* mGlobalMask;
-struct TorusMask mLocalMask;
-
 GLuint mIndex = 0;
 GLuint mNum = 0;
 
@@ -171,16 +159,6 @@ void createBufferObjects(GLuint* mVertexBufferObjectId, GLuint* mIndexBufferObje
 // R is the distance from the center of torus to the center of the circle
 void generateTorus(GLint uSteps, GLint vSteps, GLfloat majorRadius, GLfloat minorRadius)
 {
-	// set the local mask
-	mLocalMask.x1 = -(majorRadius + minorRadius);
-	mLocalMask.z1 = minorRadius;
-	//	mLocalMask.x2 = majorRadius + minorRadius;
-	//	mLocalMask.y2 = minorRadius;
-	mLocalMask.x3 = majorRadius + minorRadius;
-	mLocalMask.z3 = -minorRadius;
-	//	mLocalMask.x4 = -(majorRadius + minorRadius);
-	//	mLocalMask.y4 = -minorRadius;
-
 	GLint i, j;
 	initGrid(uSteps + 1, vSteps + 1);
 	for (j = 0; j <= vSteps; j++)
@@ -279,24 +257,7 @@ void draw(GLuint mVertexBufferObjectId, GLuint mIndexBufferObjectId)
 
 }
 
-void getGlobalMask()
-{
-	GLfloat mat[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, mat);
-
-	GLfloat scale = depth / near;
-	mGlobalMask[mIndex].x1 = mLocalMask.x1 * mat[0] + mLocalMask.z1 * mat[8] + mat[12];
-	mGlobalMask[mIndex].z1 = mLocalMask.x1 * mat[1] + mLocalMask.z1 * mat[9] + mat[13];
-	//	mGlobalMask[mIndex].x2 = mLocalMask.x2 * mat[0] + mLocalMask.y2 * mat[4] + mat[12];
-	//	mGlobalMask[mIndex].y2 = mLocalMask.x2 * mat[1] + mLocalMask.y2 * mat[5] + mat[13];
-	mGlobalMask[mIndex].x3 = mLocalMask.x3 * mat[0] + mLocalMask.z3 * mat[8] + mat[12];
-	mGlobalMask[mIndex].z3 = mLocalMask.x3 * mat[1] + mLocalMask.z3 * mat[9] + mat[13];
-	//	mGlobalMask[mIndex].x4 = mLocalMask.x4 * mat[0] + mLocalMask.y4 * mat[4] + mat[12];
-	//	mGlobalMask[mIndex].y4 = mLocalMask.x4 * mat[1] + mLocalMask.y4 * mat[5] + mat[13];
-	mIndex = (mIndex + 1) >= mNum ? 0 : mIndex + 1;
-}
-
-void drawTorus(int num, int selected)
+void drawTorus(int num, float stride, int selected)
 {
 	int i;
 	if (num == 0)
@@ -304,8 +265,7 @@ void drawTorus(int num, int selected)
 	if (selected > num)
 		selected = 0;
 
-	GLfloat distance = 6.0 / num;
-	glTranslatef(0.0f, 0.0f, distance * num / 2);
+	glTranslatef(0.0f, 0.0f, stride * num / 2);
 	for (i = 0; i < num; i++)
 	{
 		if (i < selected)
@@ -313,8 +273,7 @@ void drawTorus(int num, int selected)
 		else
 			glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
 		draw(buffer[TorusVertex], buffer[TorusIndex]);
-		getGlobalMask();
-		glTranslatef(0.0f, 0.0f, -distance);
+		glTranslatef(0.0f, 0.0f, -stride);
 	}
 }
 
@@ -325,12 +284,11 @@ void drawCylinder()
 }
 
 
-void onDrawFrame(int num_1, int num_2, int num_3, int selected)
+void onDrawFrame(int num_1, int num_2, int num_3, float stride_t, float stride_c, int selected)
 {
 	LOGI("onDrawFrame called");
 	LOGI("selected : %d", selected);
-	mNum = num_1 + num_2 + num_3;
-	mGlobalMask = (struct TorusMask*) malloc(mNum * sizeof(struct TorusMask));
+    LOGI("stride_c : %f", stride_c);
 
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -342,12 +300,12 @@ void onDrawFrame(int num_1, int num_2, int num_3, int selected)
 
 	// left cylinder with 5 Toruses
 	glPushMatrix();
-	glTranslatef(-ratio * 2.5, 0.0f, 0.0f);
+	glTranslatef(-stride_c, 0.0f, 0.0f);
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 
 	drawCylinder();
 	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
-	drawTorus(num_1, selected);
+	drawTorus(num_1, stride_t, selected);
 	glPopMatrix();
 
 	selected = selected - num_1;
@@ -356,17 +314,17 @@ void onDrawFrame(int num_1, int num_2, int num_3, int selected)
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 	drawCylinder();
 	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
-	drawTorus(num_2, selected);
+	drawTorus(num_2, stride_t, selected);
 	glPopMatrix();
 
 	selected = selected - num_2;
 	// right with 4 torus
 	glPushMatrix();
-	glTranslatef(ratio * 2.5, 0.0f, 0.0f);
+	glTranslatef(stride_c, 0.0f, 0.0f);
 	glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
 	drawCylinder();
 	glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
-	drawTorus(num_3, selected);
+	drawTorus(num_3, stride_t, selected);
 	glPopMatrix();
 	glFinish();
 }
@@ -383,52 +341,18 @@ void onSurfaceChanged(int width, int height)
 }
 
 
-void onSurfaceCreated()
+void onSurfaceCreated(float torusMinorRadius, float torusMajorRadius, float cylinderRadius, float cylinderHeight)
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	generateTorus(80, 80, 0.5, 0.1);
-	generateCylinder(80, 80, 0.3, 18.0);
+	generateTorus(80, 80, torusMajorRadius, torusMinorRadius);
+	generateCylinder(80, 80, cylinderRadius, cylinderHeight);
 
 	// set the background frame color
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 }
 
-int onTorus(GLfloat x, GLfloat y)
-{
-//	GLfloat scale = depth / near;
-//	x = x * scale;
-//	y = y * scale;
-	int i ;
-	for (i = 0; i < mNum; i++)
-	{
-		GLfloat x1, x3, z1, z3;
-		if (mGlobalMask[i].x1 < mGlobalMask[i].x3)
-		{
-			x1 = mGlobalMask[i].x1;
-			x3 = mGlobalMask[i].x3;
-		}
-		else
-		{
-			x1 = mGlobalMask[i].x3;
-			x3 = mGlobalMask[i].x1;
-		}
-		if (mGlobalMask[i].z1 < mGlobalMask[i].z3)
-		{
-			z1 = mGlobalMask[i].z1;
-			z3 = mGlobalMask[i].z3;
-		}
-		else
-		{
-			z1 = mGlobalMask[i].z3;
-			z3 = mGlobalMask[i].z1;
-		}
-		if (x >= x1 && x <= x3 && y >= z1 && y <= z3)
-			return i + 1;
-	}
-	return 0;
-}
 
 /*
  * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib
@@ -436,9 +360,9 @@ int onTorus(GLfloat x, GLfloat y)
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onDrawFrame
-(JNIEnv* env, jclass obj, jint num_1, jint num_2, jint num_3, jint selected)
+(JNIEnv* env, jclass obj, jint num_1, jint num_2, jint num_3, jfloat stride_t, jfloat stride_c, jint selected)
 {
-	onDrawFrame(num_1, num_2, num_3, selected);
+	onDrawFrame(num_1, num_2, num_3, stride_t, stride_c, selected);
 }
 
 /*
@@ -449,22 +373,24 @@ JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onDrawFrame
 JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onSurfaceChanged
 (JNIEnv* env, jclass obj, jint width, jint height)
 {
+	if (width < 0 || height < 0)
+	{
+		(*env)->ThrowNew(env,
+			(*env)->FindClass(env,
+			"java/lang/IllegalArgumentException"),
+			"onSurfaceChanged: width or height is invalid");
+		return;
+	}
 	onSurfaceChanged(width, height);
 }
 
 /*
  * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib
  * Method:    onSurfaceCreated
- * Signature: ()V
+ * Signature: (FFFF)V
  */
 JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onSurfaceCreated
-(JNIEnv* env, jclass obj)
+  (JNIEnv* env, jclass obj, jfloat torusMinorRadius, jfloat torusMajorRadius, jfloat cylinderRadius, jfloat cylinderHeight)
 {
-	onSurfaceCreated();
-}
-
-JNIEXPORT jint JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onTorus
-(JNIEnv* env, jclass obj, jfloat x, jfloat y)
-{
-	return onTorus(x, y);
+	onSurfaceCreated(torusMinorRadius, torusMajorRadius, cylinderRadius, cylinderHeight);
 }

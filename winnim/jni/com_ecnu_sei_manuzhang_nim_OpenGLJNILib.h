@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib
  * Method:    onDrawFrame
- * Signature: (IIII)V
+ * Signature: (IIIFFI)V
  */
 JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onDrawFrame
-  (JNIEnv *, jclass, jint, jint, jint, jint);
+  (JNIEnv *, jclass, jint, jint, jint, jfloat, jfloat, jint);
 
 /*
  * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib
@@ -26,18 +26,10 @@ JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onSurfaceCha
 /*
  * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib
  * Method:    onSurfaceCreated
- * Signature: ()V
+ * Signature: (FFFF)V
  */
 JNIEXPORT void JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onSurfaceCreated
-  (JNIEnv *, jclass);
-
-/*
- * Class:     com_ecnu_sei_manuzhang_nim_OpenGLJNILib
- * Method:    onTorus
- * Signature: (FF)I
- */
-JNIEXPORT jint JNICALL Java_com_ecnu_sei_manuzhang_nim_OpenGLJNILib_onTorus
-  (JNIEnv *, jclass, jfloat, jfloat);
+  (JNIEnv *, jclass, jfloat, jfloat, jfloat, jfloat);
 
 #ifdef __cplusplus
 }

@@ -7,8 +7,7 @@ public class OpenGLJNILib {
 		System.loadLibrary("shape");
 	}
 
-	public native static void onDrawFrame(int num_1, int num_2, int num_3, int selected);
+	public native static void onDrawFrame(int num_1, int num_2, int num_3, float tStride, float cStride, int selected);
 	public native static void onSurfaceChanged(int width, int height);
-	public native static void onSurfaceCreated();
-    public native static int onTorus(float x, float y);
+	public native static void onSurfaceCreated(float torusMinorRadius, float torusMajorRadius, float cylinderRadius, float cylinderHeight);
 }

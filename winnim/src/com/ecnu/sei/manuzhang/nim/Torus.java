@@ -8,8 +8,21 @@ public class Torus extends Grid {
 	    generateTorus(gl, uSteps, vSteps, majorRadius, minorRadius);
 	}
 
-	public void drawTorus(GL10 gl) {
-		draw(gl);
+	public void drawTorus(GL10 gl, int num, float stride, int selected) {
+		if (num == 0)
+			return;
+		if (selected > num)
+			selected = 0;
+		
+		gl.glTranslatef(0.0f, 0.0f, stride * num / 2);
+		for (int i = 0; i < num; i++) {
+			if (i < selected)
+				gl.glColor4f(0.5f, 0.5f, 0.5f, 0.8f);
+			else
+				gl.glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
+			draw(gl);
+			gl.glTranslatef(0.0f, 0.0f, -stride);
+		}
 	}
 
 	// x(u,v) = (R + r * cos(u)) * cos(v)

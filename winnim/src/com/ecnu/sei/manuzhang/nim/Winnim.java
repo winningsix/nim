@@ -21,7 +21,7 @@ public class Winnim extends Activity {
 	MyOnClickListener mOnClickListener = new MyOnClickListener();
 	View mDialogLayout;
 	Intent mIntent;
-	int mMax = 10;
+	int mMax = 7;
 	int mMin = 0;
 
 	/** Called when the activity is first created. */
