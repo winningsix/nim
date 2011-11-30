@@ -2,9 +2,13 @@ package com.ecnu.sei.manuzhang.nim;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,11 +22,13 @@ import android.widget.EditText;
 
 public class Winnim extends Activity {
 	private static final String TAG = Winnim.class.getSimpleName();
-	MyOnClickListener mOnClickListener = new MyOnClickListener();
-	View mDialogLayout;
-	Intent mIntent;
-	int mMax = 7;
-	int mMin = 0;
+	private MyOnClickListener mOnClickListener = new MyOnClickListener();
+	private View mDialogLayout;
+
+	
+	private Intent mIntent;
+	private int mMax = 7;
+	private int mMin = 0;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -136,6 +142,8 @@ public class Winnim extends Activity {
 		})
 		.show();
 	}
+
+	
 
 	private void startGame() {
 		int text;

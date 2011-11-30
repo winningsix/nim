@@ -7,14 +7,47 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.ecnu.sei.manuzhang.nim.GameActivity.State;
 
 public class GameView extends GLSurfaceView {
 	private GameViewRenderer mRenderer;
 
+	private IViewListener mViewListener;
 	private State mCurrentPlayer = State.UNKNOWN;
 	private State mWinner = State.EMPTY;
 
+	public enum State {
+		UNKNOWN(-3),
+		WIN(-2),
+		EMPTY(0),
+		PLAYER1(1),
+		PLAYER2(2);
+
+		private int mValue;
+
+		private State(int value) {
+			mValue = value;
+		}
+
+		public int getValue() {
+			return mValue;
+		}
+
+		public static State fromInt(int i) {
+			for (State s : values()) {
+				if (s.getValue() == i) 
+					return s;
+			}
+			return EMPTY;
+		}
+	}
+
+	public interface IViewListener {
+		void onTouchView(boolean selected);
+	}
+
+	public void setViewListener(IViewListener viewListener) {
+		mViewListener = viewListener;
+	}
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
@@ -25,22 +58,19 @@ public class GameView extends GLSurfaceView {
 
 		int action = event.getActionMasked();
 
-		if (action == MotionEvent.ACTION_DOWN)
-			return true;
-		else if (action == MotionEvent.ACTION_UP)  {
+		if (action == MotionEvent.ACTION_DOWN)  {
 			int selected = onTorus(x, y, GameViewRenderer.mTorusMask);
 			if (selected > 0) {
 				GameViewRenderer.mSelected = selected;
 				requestRender();
-				GameActivity.getButton().setEnabled(true);
+				mViewListener.onTouchView(true);
 			}
-			else if (GameViewRenderer.mSelected != 0) {
+			else if  (GameViewRenderer.mSelected != 0) {
 				GameViewRenderer.mSelected = 0;
 				requestRender();
-				GameActivity.getButton().setEnabled(false);
+				mViewListener.onTouchView(false);
 			}
 		}
-
 		return true;
 	}
 
@@ -79,7 +109,7 @@ public class GameView extends GLSurfaceView {
 		GameViewRenderer.num_3 = num_3;
 		GameViewRenderer.mNum = num_1 + num_2 + num_3;
 		GameViewRenderer.mSelected = 0;
-		
+
 		requestRender();
 		GameViewRenderer.mTorusMask.clear();
 		mRenderer.setTorusMask();
@@ -90,12 +120,12 @@ public class GameView extends GLSurfaceView {
 		GameViewRenderer.num_2 = num_2;
 		GameViewRenderer.num_3 = num_3;
 		GameViewRenderer.mNum = num_1 + num_2 + num_3;
-		
+
 		requestRender();
-	    GameViewRenderer.mTorusMask.clear();
+		GameViewRenderer.mTorusMask.clear();
 		mRenderer.setTorusMask();
 	}
-	
+
 	public State getCurrentPlayer() {
 		return mCurrentPlayer;
 	}
@@ -110,7 +140,7 @@ public class GameView extends GLSurfaceView {
 
 	public void setWinner(State winner) {
 		mWinner = winner;
-	}
+	} 
 
 	private int onTorus(float x, float y, ArrayList<Float[]> mask) {
 		int count = mask.size();

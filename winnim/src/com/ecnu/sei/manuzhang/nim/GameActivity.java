@@ -1,6 +1,8 @@
 package com.ecnu.sei.manuzhang.nim;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -10,6 +12,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.ecnu.sei.manuzhang.nim.GameView.IViewListener;
+import com.ecnu.sei.manuzhang.nim.GameView.State;
 
 public class GameActivity extends Activity {
 	private static final String TAG = GameActivity.class.getSimpleName();
@@ -21,9 +26,13 @@ public class GameActivity extends Activity {
 	public static final String NUM_3 = "com.ecnu.sei.manuzhang.nim.num3";
 
 	private static final int MSG_COMPUTER_TURN = 1;
-	private static final long COMPUTER_DELAY_MS = 2500;
-    private static final long PLAYER_DELAY_MS = 1500;
-    
+	private static final long COMPUTER_DELAY_MS = 3000;
+	private static final long PLAYER_DELAY_MS = 2500;
+	private static final int DIALOG_KEY = 0;
+
+	private ProgressThread mProgressThread;
+	private ProgressDialog mProgressDialog;
+	
 	private Handler mHandler = new Handler(new Callback() {
 
 		@Override
@@ -51,26 +60,26 @@ public class GameActivity extends Activity {
 						int tmp_1 = num_1;
 						int tmp_2 = num_2;
 						int tmp_3 = num_3;
-						
-					    while (getNim(tmp_1, tmp_2, tmp_3) != 0 && tmp_1 != 0) 
-					    	tmp_1 -= 1;
-					    if (tmp_1 == 0) {
-					    	tmp_1 = num_1;
-					    	while (getNim(tmp_1, tmp_2, tmp_3) !=0 && tmp_2 != 0)
-					    		tmp_2 -= 1;
-					    	if (tmp_2 == 0) {
-					    		tmp_2 = num_2;
-					    		while (getNim(tmp_1, tmp_2, tmp_3) != 0 && tmp_3 != 0)
-					    			tmp_3 -= 1;
-					    	}
-					    }
-					    num_1 = tmp_1;
-					    num_2 = tmp_2;
-					    num_3 = tmp_3;
+
+						while (getNim(tmp_1, tmp_2, tmp_3) != 0 && tmp_1 != 0) 
+							tmp_1 -= 1;
+						if (tmp_1 == 0) {
+							tmp_1 = num_1;
+							while (getNim(tmp_1, tmp_2, tmp_3) !=0 && tmp_2 != 0)
+								tmp_2 -= 1;
+							if (tmp_2 == 0) {
+								tmp_2 = num_2;
+								while (getNim(tmp_1, tmp_2, tmp_3) != 0 && tmp_3 != 0)
+									tmp_3 -= 1;
+							}
+						}
+						num_1 = tmp_1;
+						num_2 = tmp_2;
+						num_3 = tmp_3;
 					}
 				}					
 				mGameView.setComputerMove(num_1, num_2, num_3);
-                try {
+				try {
 					Thread.sleep(PLAYER_DELAY_MS);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -89,33 +98,9 @@ public class GameActivity extends Activity {
 	});
 	private GameView mGameView;
 	private TextView mInfoView;
-	private static Button mButtonNext;
+	private Button mButtonNext;
 
-	public enum State {
-		UNKNOWN(-3),
-		WIN(-2),
-		EMPTY(0),
-		PLAYER1(1),
-		PLAYER2(2);
 
-		private int mValue;
-
-		private State(int value) {
-			mValue = value;
-		}
-
-		public int getValue() {
-			return mValue;
-		}
-
-		public static State fromInt(int i) {
-			for (State s : values()) {
-				if (s.getValue() == i) 
-					return s;
-			}
-			return EMPTY;
-		}
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -135,6 +120,17 @@ public class GameActivity extends Activity {
 		mButtonNext = (Button) findViewById(R.id.next_turn);
 
 		mGameView.setFocusableInTouchMode(true);
+		mGameView.setViewListener(new IViewListener() {
+
+			@Override
+			public void onTouchView(boolean selected) {
+				if (mGameView.getCurrentPlayer() == State.PLAYER1) {
+					mButtonNext.setEnabled(selected);
+				}
+
+			}
+		});
+		
 		mButtonNext.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -157,6 +153,7 @@ public class GameActivity extends Activity {
 			}
 
 		});
+		showDialog(DIALOG_KEY);
 	}
 
 	@Override
@@ -208,9 +205,79 @@ public class GameActivity extends Activity {
 		super.onRestart();
 	}
 
+		@Override
+	  protected Dialog onCreateDialog(int id) {
+        switch(id) {
+        case DIALOG_KEY:
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setMessage("Loading...");
+            return mProgressDialog;
+        default:
+            return null;
+        }
+    }
+		
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch(id) {
+        case DIALOG_KEY:
+            mProgressDialog.setProgress(0);
+            mProgressThread = new ProgressThread(handler);
+            mProgressThread.start();
+        }
+    }
+        
+    // Define the Handler that receives messages from the thread and update the progress
+    final Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            int total = msg.arg1;
+            mProgressDialog.setProgress(total);
+            if (total >= 100){
+                dismissDialog(DIALOG_KEY);
+                mProgressThread.setState(ProgressThread.STATE_DONE);
+            }
+        }
+    };
+
+    /** Nested class that performs progress calculations (counting) */
+    private class ProgressThread extends Thread {
+        Handler mHandler;
+        final static int STATE_DONE = 0;
+        final static int STATE_RUNNING = 1;
+        int mState;
+        int total;
+       
+        ProgressThread(Handler h) {
+            mHandler = h;
+        }
+       
+        public void run() {
+            mState = STATE_RUNNING;   
+            total = 0;
+            while (mState == STATE_RUNNING) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Log.e("ERROR", "Thread Interrupted");
+                }
+                Message msg = mHandler.obtainMessage();
+                msg.arg1 = total;
+                mHandler.sendMessage(msg);
+                total++;
+            }
+        }
+        
+        /* sets the current state for the thread,
+         * used to stop the thread */
+        public void setState(int state) {
+            mState = state;
+        }
+    }
+    
 	private State selectTurn(State player) {
-		mGameView.setCurrentPlayer(player);
 		mButtonNext.setEnabled(false);
+		mGameView.setCurrentPlayer(player);
 
 		if (player == State.PLAYER1) {
 			mInfoView.setText(R.string.player1_turn);
@@ -231,7 +298,7 @@ public class GameActivity extends Activity {
 		if (!checkGameFinished(player)) {
 			player = selectTurn(getOtherPlayer(player));
 			if (player == State.PLAYER2) {
-				mHandler.sendEmptyMessageDelayed(MSG_COMPUTER_TURN, COMPUTER_DELAY_MS);
+				mHandler.sendEmptyMessageDelayed(MSG_COMPUTER_TURN, 0);
 			}
 		}
 	}
@@ -245,16 +312,16 @@ public class GameActivity extends Activity {
 	}
 
 	private void setWinState(State player) {
-		mButtonNext.setEnabled(true);
-		mButtonNext.setText("Back");
-
 		String text;
 
 		if (player == State.PLAYER1)
 			text = getString(R.string.player1_win);
 		else 
 			text = getString(R.string.player2_win);
-		mInfoView.setText(text);
+		mInfoView.setText(text);		
+
+		mButtonNext.setEnabled(true);
+		mButtonNext.setText("Back");
 	}
 
 	private void setFinished(State player) {
@@ -265,9 +332,6 @@ public class GameActivity extends Activity {
 		setWinState(player);
 	}
 
-	public static Button getButton() {
-		return mButtonNext;
-	}
 }
 
 
