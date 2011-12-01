@@ -14,11 +14,12 @@
         
         <Button
             android:id="@+id/button_plus1"
-            android:text="@string/button_plus_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:background="@drawable/timepicker_up_btn"
         />
+        
         <EditText
             android:id="@+id/edit_text1"
             android:text="@string/default1"
@@ -27,13 +28,15 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:inputType="number"
+            android:background="@drawable/timepicker_input"
         />
+        
         <Button
             android:id="@+id/button_minus1"
-            android:text="@string/button_minus_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:background="@drawable/timepicker_down_btn"
         />
             
     </LinearLayout>
@@ -45,10 +48,10 @@
         
         <Button
             android:id="@+id/button_plus2"
-            android:text="@string/button_plus_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:background="@drawable/timepicker_up_btn"
         />
         <EditText
             android:id="@+id/edit_text2"
@@ -57,13 +60,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:background="@drawable/timepicker_input"
         />
         <Button
             android:id="@+id/button_minus2"
-            android:text="@string/button_minus_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:background="@drawable/timepicker_down_btn"
         />
             
     </LinearLayout>
@@ -73,12 +77,13 @@
         android:layout_gravity="right" 
         android:orientation="vertical">
         
+        
         <Button
             android:id="@+id/button_plus3"
-            android:text="@string/button_plus_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:background="@drawable/timepicker_up_btn"
         />
         <EditText
             android:id="@+id/edit_text3"
@@ -87,13 +92,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:background="@drawable/timepicker_input"
         />
         <Button
             android:id="@+id/button_minus3"
-            android:text="@string/button_minus_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:background="@drawable/timepicker_down_btn"
         />
             
     </LinearLayout>
