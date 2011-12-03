@@ -3,11 +3,9 @@ package com.ecnu.sei.manuzhang.nim;
 import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView;
-import android.opengl.GLU;
 import android.util.Log;
 
 public class GameViewRenderer implements GLSurfaceView.Renderer {
@@ -30,61 +28,13 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		Log.d(TAG, "onDrawFrame");
-		/*gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-
-		GLU.gluLookAt(gl, 0f, 0f, 5.0f, 0f, 0f, 0f, 0f, 1.0f, 0f);
-		gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-
-		// left cylinder with 5 Toruses
-		gl.glPushMatrix();
-		gl.glTranslatef(-mcStride, 0.0f, 0.0f);
-		gl.glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
-		mCylinder.draw(gl);
-		gl.glColor4f(1.0f, 1.0f, 0.0f, 0.5f);
-		mTorus.drawTorus(gl, num_1, mtStride, mSelected);
-		gl.glPopMatrix();
-
-		mSelected = mSelected - num_1;
-		// middle with 2 toruses
-		gl.glPushMatrix();
-		gl.glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
-		mCylinder.draw(gl);
-	    gl.glColor4f(1.0f, 1.0f, 0.0f, 0.8f);
-		mTorus.drawTorus(gl, num_2, mtStride, mSelected);
-		gl.glPopMatrix();
-
-		mSelected = mSelected - num_2;
-		// right with 4 torus
-		gl.glPushMatrix();
-		gl.glTranslatef(mcStride, 0.0f, 0.0f);
-		gl.glColor4f(1.0f, 0.0f, 0.5f, 1.0f);
-		mCylinder.draw(gl);
-		gl.glColor4f(1.0f, 1.0f, 0.0f, 0.5f);
-		mTorus.drawTorus(gl, num_3, mtStride, mSelected);
-		gl.glPopMatrix();
-
-		checkGLError(gl); */
 		OpenGLJNILib.onDrawFrame(num_1, num_2, num_3, mtStride, mcStride, mSelected);
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		Log.d(TAG, "onSurfaceChanged");
-		
-		//gl.glViewport(0, 0, width, height);
-		  
-		// make adjustments for screen ratio       
-		// cylinder is not drawn at the same surface as the screen
-		// so the scale is needed
 		mcStride = (float) 2.5 * width / height;
-		/*gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glFrustumf(-mcStride / 5, mcStride / 5, -1, 1, 1, 10);
-		checkGLError(gl);*/
-
 	    setTorusMask();
 		OpenGLJNILib.onSurfaceChanged(width, height);
 	}
@@ -92,13 +42,6 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		Log.d(TAG, "onSurfaceCreated");
-		//mTorus = new Torus(gl, 60, 60, mtorusMajorRadius, mtorusMinorRadius);
-		//mCylinder = new Cylinder(gl, 60, 60, mcylinderRadius, mcylinderHeight);
-
-		// set the background frame color
-		//gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-
-		//checkGLError(gl);
 		OpenGLJNILib.onSurfaceCreated(mtorusMinorRadius, mtorusMajorRadius, mcylinderRadius, mcylinderHeight);
 	}
 
@@ -121,13 +64,6 @@ public class GameViewRenderer implements GLSurfaceView.Renderer {
 			origin[1] = origin[1] - mtStride;
 		}
 	}
-
-	public static void checkGLError(GL gl) {
-		int error = ((GL10) gl).glGetError();
-		if (error != GL10.GL_NO_ERROR) {
-			throw new RuntimeException("GLError 0x" + Integer.toHexString(error));
-		}
-	} 
 }
 
 

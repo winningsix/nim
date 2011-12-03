@@ -5,7 +5,7 @@
     <string name="new_game_label">New Game</string>
     <string name="continue_label">Continue</string>
     <string name="tutorial_label">Tutorial</string>
-    <string name="about_label">About Nim</string>
+    <string name="about_label">About</string>
     
     <string name="player1_turn">Your turn</string>
     <string name="player2_turn">Computer"'"s turn</string>
@@ -20,4 +20,12 @@
     <string name="default1">3</string>
     <string name="default2">4</string>
     <string name="default3">5</string>
+    
+    <string name="about_title">About Nim</string>
+    <string name="about_text">Nim is a mathematical game of strategy in which 
+                              two players take turns removing objects from distinct heaps. 
+                              On each turn, a player must remove at least one object, 
+                              and may remove any number of objects 
+                              provided they all come from the same heap.
+                              The person who takes the last object wins.</string>
 </resources>

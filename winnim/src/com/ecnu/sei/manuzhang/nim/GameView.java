@@ -74,12 +74,6 @@ public class GameView extends GLSurfaceView {
 		return true;
 	}
 
-
-	public GameView(Context context) {
-		super(context);
-		initRender();
-	}
-
 	public GameView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initRender();

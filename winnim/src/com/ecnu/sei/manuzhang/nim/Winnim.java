@@ -24,7 +24,9 @@ public class Winnim extends Activity {
 	private static final String TAG = Winnim.class.getSimpleName();
 	private MyOnClickListener mOnClickListener = new MyOnClickListener();
 	private View mDialogLayout;
-
+    public static final String BUTTON = "com.ecnu.sei.manuzhang.nim.button";
+	public static final int NEW_BUTTON = 0;
+	public static final int CONTINUE_BUTTON = 1;
 	
 	private Intent mIntent;
 	private int mMax = 7;
@@ -131,7 +133,11 @@ public class Winnim extends Activity {
 		.setPositiveButton("start", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				startGame();
+				int num_1 = Integer.parseInt(((EditText)mDialogLayout.findViewById(R.id.edit_text1)).getText().toString());
+                int num_2 = Integer.parseInt(((EditText)mDialogLayout.findViewById(R.id.edit_text2)).getText().toString());
+		        int num_3 = Integer.parseInt(((EditText)mDialogLayout.findViewById(R.id.edit_text3)).getText().toString());
+
+				startGame(num_1, num_2, num_3, NEW_BUTTON);
 			}
 		})
 		.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -143,21 +149,20 @@ public class Winnim extends Activity {
 		.show();
 	}
 
-	
+	private void startGame(int button) {
+		mIntent.putExtra(BUTTON, button);
+		startActivity(mIntent);
+	}
 
-	private void startGame() {
-		int text;
-		text = Integer.parseInt(((EditText)mDialogLayout.findViewById(R.id.edit_text1)).getText().toString());
-		mIntent.putExtra(GameActivity.NUM_1, inLimit(text));
-		text = Integer.parseInt(((EditText)mDialogLayout.findViewById(R.id.edit_text2)).getText().toString());
-		mIntent.putExtra(GameActivity.NUM_2, inLimit(text));
-		text = Integer.parseInt(((EditText)mDialogLayout.findViewById(R.id.edit_text3)).getText().toString());
-		mIntent.putExtra(GameActivity.NUM_3, inLimit(text));
+	private void startGame(int num_1, int num_2, int num_3, int button) {
+		mIntent.putExtra(GameActivity.NUM_1, inLimit(num_1));
+		mIntent.putExtra(GameActivity.NUM_2, inLimit(num_2));
+		mIntent.putExtra(GameActivity.NUM_3, inLimit(num_3));
+		mIntent.putExtra(BUTTON, button);
 		startActivity(mIntent);
 	}
 
 	class MyOnClickListener implements OnClickListener {
-
 		@Override
 		public void onClick(View view) {
 			EditText editText;
@@ -169,10 +174,13 @@ public class Winnim extends Activity {
 				openNewGameDialog();
 				break;
 			case R.id.continue_button:
+				Log.d("continue", "continue button clicked");
+                startGame(CONTINUE_BUTTON);
 				break;
 			case R.id.tutorial_button:
 				break;
 			case R.id.about_button:
+				startActivity(new Intent(Winnim.this, About.class));
 				break;
 			case R.id.button_plus1:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text1);

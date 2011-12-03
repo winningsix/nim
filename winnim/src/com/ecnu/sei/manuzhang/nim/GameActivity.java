@@ -25,6 +25,7 @@ public class GameActivity extends Activity {
 	public static final String NUM_2 = "com.ecnu.sei.manuzhang.nim.num2";
 	public static final String NUM_3 = "com.ecnu.sei.manuzhang.nim.num3";
 
+
 	private static final int MSG_COMPUTER_TURN = 1;
 	private static final long COMPUTER_DELAY_MS = 3000;
 	private static final long PLAYER_DELAY_MS = 2500;
@@ -32,7 +33,7 @@ public class GameActivity extends Activity {
 
 	private ProgressThread mProgressThread;
 	private ProgressDialog mProgressDialog;
-	
+
 	private Handler mHandler = new Handler(new Callback() {
 
 		@Override
@@ -108,12 +109,7 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
 
-		GameViewRenderer.num_1 = getIntent().getIntExtra(NUM_1, Integer.parseInt(getString(R.string.default1)));
-		GameViewRenderer.num_2 = getIntent().getIntExtra(NUM_2, Integer.parseInt(getString(R.string.default2)));
-		GameViewRenderer.num_3 = getIntent().getIntExtra(NUM_3, Integer.parseInt(getString(R.string.default3)));
-		GameViewRenderer.mNum = GameViewRenderer.num_1 
-				+ GameViewRenderer.num_2
-				+ GameViewRenderer.num_3;
+        getNums();
 
 		mGameView = (GameView) findViewById(R.id.game_view);
 		mInfoView = (TextView) findViewById(R.id.info_turn);
@@ -130,7 +126,7 @@ public class GameActivity extends Activity {
 
 			}
 		});
-		
+
 		mButtonNext.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -156,6 +152,29 @@ public class GameActivity extends Activity {
 		showDialog(DIALOG_KEY);
 	}
 
+	private void getNums() {
+		int button = getIntent().getIntExtra(Winnim.BUTTON, Winnim.NEW_BUTTON);
+		switch (button) {
+		case Winnim.NEW_BUTTON:
+			GameViewRenderer.num_1 = getIntent().getIntExtra(NUM_1, Integer.parseInt(getString(R.string.default1)));
+			GameViewRenderer.num_2 = getIntent().getIntExtra(NUM_2, Integer.parseInt(getString(R.string.default2)));
+			GameViewRenderer.num_3 = getIntent().getIntExtra(NUM_3, Integer.parseInt(getString(R.string.default3)));
+			GameViewRenderer.mNum = GameViewRenderer.num_1 
+					+ GameViewRenderer.num_2
+					+ GameViewRenderer.num_3;
+			break;
+		case Winnim.CONTINUE_BUTTON:
+			GameViewRenderer.num_1 = getPreferences(MODE_PRIVATE).getInt(GameActivity.NUM_1, 
+					Integer.parseInt(getText(R.string.default1).toString()));
+			GameViewRenderer.num_2 = getPreferences(MODE_PRIVATE).getInt(GameActivity.NUM_2, 
+					Integer.parseInt(getText(R.string.default2).toString()));
+			GameViewRenderer.num_3 = getPreferences(MODE_PRIVATE).getInt(GameActivity.NUM_3, 
+					Integer.parseInt(getText(R.string.default3).toString()));
+			GameViewRenderer.mNum = GameViewRenderer.num_1 
+					+ GameViewRenderer.num_2
+					+ GameViewRenderer.num_3;
+		}
+	}
 	@Override
 	public void onStart() {
 		Log.d(TAG, "game started");
@@ -185,6 +204,11 @@ public class GameActivity extends Activity {
 	public void onPause() {
 		Log.d(TAG, "game paused");
 		super.onPause();
+		getPreferences(MODE_PRIVATE).edit()
+		.putInt(NUM_1, GameViewRenderer.num_1)
+		.putInt(NUM_2, GameViewRenderer.num_2)
+		.putInt(NUM_3, GameViewRenderer.num_3)
+		.commit();
 	}
 
 	@Override
@@ -205,76 +229,76 @@ public class GameActivity extends Activity {
 		super.onRestart();
 	}
 
-		@Override
-	  protected Dialog onCreateDialog(int id) {
-        switch(id) {
-        case DIALOG_KEY:
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setMessage("Loading...");
-            return mProgressDialog;
-        default:
-            return null;
-        }
-    }
-		
-    @Override
-    protected void onPrepareDialog(int id, Dialog dialog) {
-        switch(id) {
-        case DIALOG_KEY:
-            mProgressDialog.setProgress(0);
-            mProgressThread = new ProgressThread(handler);
-            mProgressThread.start();
-        }
-    }
-        
-    // Define the Handler that receives messages from the thread and update the progress
-    final Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            int total = msg.arg1;
-            mProgressDialog.setProgress(total);
-            if (total >= 100){
-                dismissDialog(DIALOG_KEY);
-                mProgressThread.setState(ProgressThread.STATE_DONE);
-            }
-        }
-    };
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch(id) {
+		case DIALOG_KEY:
+			mProgressDialog = new ProgressDialog(this);
+			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			mProgressDialog.setMessage("Loading...");
+			return mProgressDialog;
+		default:
+			return null;
+		}
+	}
 
-    /** Nested class that performs progress calculations (counting) */
-    private class ProgressThread extends Thread {
-        Handler mHandler;
-        final static int STATE_DONE = 0;
-        final static int STATE_RUNNING = 1;
-        int mState;
-        int total;
-       
-        ProgressThread(Handler h) {
-            mHandler = h;
-        }
-       
-        public void run() {
-            mState = STATE_RUNNING;   
-            total = 0;
-            while (mState == STATE_RUNNING) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Log.e("ERROR", "Thread Interrupted");
-                }
-                Message msg = mHandler.obtainMessage();
-                msg.arg1 = total;
-                mHandler.sendMessage(msg);
-                total++;
-            }
-        }
-        
-        /* sets the current state for the thread,
-         * used to stop the thread */
-        public void setState(int state) {
-            mState = state;
-        }
-    }
-    
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch(id) {
+		case DIALOG_KEY:
+			mProgressDialog.setProgress(0);
+			mProgressThread = new ProgressThread(handler);
+			mProgressThread.start();
+		}
+	}
+
+	// Define the Handler that receives messages from the thread and update the progress
+	final Handler handler = new Handler() {
+		public void handleMessage(Message msg) {
+			int total = msg.arg1;
+			mProgressDialog.setProgress(total);
+			if (total >= 100){
+				dismissDialog(DIALOG_KEY);
+				mProgressThread.setState(ProgressThread.STATE_DONE);
+			}
+		}
+	};
+
+	/** Nested class that performs progress calculations (counting) */
+	private class ProgressThread extends Thread {
+		Handler mHandler;
+		final static int STATE_DONE = 0;
+		final static int STATE_RUNNING = 1;
+		int mState;
+		int total;
+
+		ProgressThread(Handler h) {
+			mHandler = h;
+		}
+
+		public void run() {
+			mState = STATE_RUNNING;   
+			total = 0;
+			while (mState == STATE_RUNNING) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					Log.e("ERROR", "Thread Interrupted");
+				}
+				Message msg = mHandler.obtainMessage();
+				msg.arg1 = total;
+				mHandler.sendMessage(msg);
+				total++;
+			}
+		}
+
+		/* sets the current state for the thread,
+		 * used to stop the thread */
+		public void setState(int state) {
+			mState = state;
+		}
+	}
+
 	private State selectTurn(State player) {
 		mButtonNext.setEnabled(false);
 		mGameView.setCurrentPlayer(player);
