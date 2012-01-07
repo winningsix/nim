@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -20,16 +17,30 @@ import android.widget.TextView;
 
 public class Winnim extends Activity {
 	private static final String TAG = Winnim.class.getSimpleName();
-	private MyOnClickListener mOnClickListener = new MyOnClickListener();
-	private View mDialogLayout;
+
 	public static final String BUTTON = "com.ecnu.sei.manuzhang.nim.button";
 	public static final int NEW_BUTTON = 0;
 	public static final int CONTINUE_BUTTON = 1;
 
-	private Intent mIntent;
-	private int mMax = 7;
-	private int mMin = 0;
+    // limits of objects on each stack
+	private static int mMax = 7;
+	private static int mMin = 0;
 
+	// styles and themes constants of dialog
+	private static final int NO_TITLE = 0;
+	private static final int NO_FRAME = 1;
+	private static final int NO_INPUT = 2;
+	private static final int NORMAL_HOLO = 3;
+	private static final int NORMAL_HOLO_LIGHT_DIALOG = 4;
+	private static final int NO_TITLE_HOLO_LIGHT = 5;
+	private static final int NO_FRAME_HOLO_LIGHT_PANEL = 6;
+	private static final int NORMAL_HOLO_LIGHT = 7;
+	
+	
+	private MyOnClickListener mOnClickListener = new MyOnClickListener();
+	private View mDialogLayout;
+	private Intent mIntent;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,65 +55,8 @@ public class Winnim extends Activity {
 		newGameButton.setOnClickListener(mOnClickListener);
 		Button continueButton = (Button) findViewById(R.id.continue_button);
 		continueButton.setOnClickListener(mOnClickListener);
-/*		Button tutorialButton = (Button) findViewById(R.id.tutorial_button);
-		tutorialButton.setOnClickListener(mOnClickListener);*/
 		Button aboutButton = (Button) findViewById(R.id.about_button);
 		aboutButton.setOnClickListener(mOnClickListener);
-	}
-
-	@Override
-	public void onStart() {
-		Log.d(TAG, "nim started");
-		super.onStart();
-	}
-
-	@Override
-	public void onResume() {
-		Log.d(TAG, "nim resumed");
-		super.onResume();
-
-	}
-
-	@Override
-	public void onPause() {
-		Log.d(TAG, "nim paused");
-		super.onPause();
-	}
-
-	@Override
-	public void onStop() {
-		Log.d(TAG, "nim stopped");
-		super.onStop();
-	}
-
-	@Override
-	public void onDestroy() {
-		Log.d(TAG, "nim destroyed");
-		super.onDestroy();
-	}
-
-	@Override
-	public void onRestart() {
-		Log.d(TAG, "nim restarted");	
-		super.onRestart();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		return true;
-	}
-
-	@Override 
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.settings:
-			startActivity(new Intent(this, Prefs.class));
-			return true;
-		}
-		return false;
 	}
 
 	private void openNewGameDialog() {
@@ -127,6 +81,7 @@ public class Winnim extends Activity {
 		button_minus3.setOnClickListener(mOnClickListener);
 
 		builder
+		.setTitle("Please set number of objects on each stack")
 		.setView(mDialogLayout)
 		.setPositiveButton("start", new DialogInterface.OnClickListener() {
 			@Override
@@ -156,8 +111,7 @@ public class Winnim extends Activity {
 		mIntent.putExtra(GameActivity.NUM_1, inLimit(num_1));
 		mIntent.putExtra(GameActivity.NUM_2, inLimit(num_2));
 		mIntent.putExtra(GameActivity.NUM_3, inLimit(num_3));
-		mIntent.putExtra(BUTTON, button);
-		startActivity(mIntent);
+        startGame(button);
 	}
 
 	private static class AboutDialogFragment extends DialogFragment {
@@ -212,6 +166,7 @@ public class Winnim extends Activity {
 			return v;
 		}
 	}
+	
 	private class MyOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View view) {
@@ -219,6 +174,7 @@ public class Winnim extends Activity {
 			int text;
 
 			switch(view.getId()) {
+			// buttons of main activity
 			case R.id.new_game_button:
 				Log.d("new_game", "new game button clicked");
 				openNewGameDialog();
@@ -227,12 +183,12 @@ public class Winnim extends Activity {
 				Log.d("continue", "continue button clicked");
 				startGame(CONTINUE_BUTTON);
 				break;
-/*			case R.id.tutorial_button:
-				break;*/
 			case R.id.about_button:
-				DialogFragment newFragment = AboutDialogFragment.newInstance(4);
+				DialogFragment newFragment = AboutDialogFragment.newInstance(NORMAL_HOLO_LIGHT_DIALOG);
 				newFragment.show(getFragmentManager(), "dialog");
 				break;
+				
+			// buttons of number picker
 			case R.id.button_plus1:
 				editText = (EditText) mDialogLayout.findViewById(R.id.edit_text1);
 				text = Integer.parseInt(editText.getText().toString()) + 1;

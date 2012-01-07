@@ -87,7 +87,7 @@ public class GameView extends GLSurfaceView {
 		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
 
-	public void setOneStep() {
+	public void setUserMove() {
 		int selected = GameViewRenderer.mSelected;
 		int num_1 = GameViewRenderer.num_1;
 		int num_2 = GameViewRenderer.num_2;
@@ -127,14 +127,6 @@ public class GameView extends GLSurfaceView {
 	public void setCurrentPlayer(State player) {
 		mCurrentPlayer = player;
 	}
-
-	public State getWinner() {
-		return mWinner;
-	}
-
-	public void setWinner(State winner) {
-		mWinner = winner;
-	} 
 
 	private int onTorus(float x, float y, ArrayList<Float[]> mask) {
 		int count = mask.size();

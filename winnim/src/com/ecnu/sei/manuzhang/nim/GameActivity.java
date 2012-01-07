@@ -109,7 +109,7 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
 
-        getNums();
+		getNums();
 
 		mGameView = (GameView) findViewById(R.id.game_view);
 		mInfoView = (TextView) findViewById(R.id.info_turn);
@@ -136,7 +136,7 @@ public class GameActivity extends Activity {
 				if (player == State.WIN) {
 					GameActivity.this.finish();
 				} else if (player == State.PLAYER1) {
-					mGameView.setOneStep();
+					mGameView.setUserMove();
 					try {
 						Thread.sleep(COMPUTER_DELAY_MS);
 					} catch (InterruptedException e) {
@@ -149,7 +149,25 @@ public class GameActivity extends Activity {
 			}
 
 		});
+
+		// show the progress dialog
 		showDialog(DIALOG_KEY);
+		
+		// user will start first
+		State player = State.PLAYER1;
+		selectTurn(player);
+	}
+
+
+	@Override
+	public void onPause() {
+		Log.d(TAG, "game paused");
+		super.onPause();
+		getPreferences(MODE_PRIVATE).edit()
+		.putInt(NUM_1, GameViewRenderer.num_1)
+		.putInt(NUM_2, GameViewRenderer.num_2)
+		.putInt(NUM_3, GameViewRenderer.num_3)
+		.commit();
 	}
 
 	private void getNums() {
@@ -173,129 +191,7 @@ public class GameActivity extends Activity {
 			GameViewRenderer.mNum = GameViewRenderer.num_1 
 					+ GameViewRenderer.num_2
 					+ GameViewRenderer.num_3;
-		}
-	}
-	@Override
-	public void onStart() {
-		Log.d(TAG, "game started");
-		super.onStart();
-	}
-
-	@Override
-	public void onResume() {
-		Log.d(TAG, "game resumed");
-		super.onResume();
-
-		State player = mGameView.getCurrentPlayer();
-		if (player == State.UNKNOWN) {
-			player = State.fromInt(getIntent().getIntExtra(EXTRA_START_PLAYER, 1));
-			if (!checkGameFinished(player))
-				selectTurn(player);
-		}
-		if (player == State.PLAYER2)
-			mHandler.sendEmptyMessageDelayed(MSG_COMPUTER_TURN, COMPUTER_DELAY_MS);
-		if (player == State.WIN)
-			setWinState(mGameView.getWinner());
-	}
-
-
-
-	@Override
-	public void onPause() {
-		Log.d(TAG, "game paused");
-		super.onPause();
-		getPreferences(MODE_PRIVATE).edit()
-		.putInt(NUM_1, GameViewRenderer.num_1)
-		.putInt(NUM_2, GameViewRenderer.num_2)
-		.putInt(NUM_3, GameViewRenderer.num_3)
-		.commit();
-	}
-
-	@Override
-	public void onStop() {
-		Log.d(TAG, "game stopped");
-		super.onStop();
-	}
-
-	@Override
-	public void onDestroy() {
-		Log.d(TAG, "game destroyed");
-		super.onDestroy();
-	}
-
-	@Override
-	public void onRestart() {
-		Log.d(TAG, "game restarted");
-		super.onRestart();
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch(id) {
-		case DIALOG_KEY:
-			mProgressDialog = new ProgressDialog(this);
-			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			mProgressDialog.setMessage("Loading...");
-			return mProgressDialog;
-		default:
-			return null;
-		}
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		switch(id) {
-		case DIALOG_KEY:
-			mProgressDialog.setProgress(0);
-			mProgressThread = new ProgressThread(handler);
-			mProgressThread.start();
-		}
-	}
-
-	// Define the Handler that receives messages from the thread and update the progress
-	final Handler handler = new Handler() {
-		public void handleMessage(Message msg) {
-			int total = msg.arg1;
-			mProgressDialog.setProgress(total);
-			if (total >= 100){
-				dismissDialog(DIALOG_KEY);
-				mProgressThread.setState(ProgressThread.STATE_DONE);
-			}
-		}
-	};
-
-	/** Nested class that performs progress calculations (counting) */
-	private class ProgressThread extends Thread {
-		Handler mHandler;
-		final static int STATE_DONE = 0;
-		final static int STATE_RUNNING = 1;
-		int mState;
-		int total;
-
-		ProgressThread(Handler h) {
-			mHandler = h;
-		}
-
-		public void run() {
-			mState = STATE_RUNNING;   
-			total = 0;
-			while (mState == STATE_RUNNING) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					Log.e("ERROR", "Thread Interrupted");
-				}
-				Message msg = mHandler.obtainMessage();
-				msg.arg1 = total;
-				mHandler.sendMessage(msg);
-				total++;
-			}
-		}
-
-		/* sets the current state for the thread,
-		 * used to stop the thread */
-		public void setState(int state) {
-			mState = state;
+			break;
 		}
 	}
 
@@ -350,12 +246,88 @@ public class GameActivity extends Activity {
 
 	private void setFinished(State player) {
 		mGameView.setCurrentPlayer(State.WIN);
-		mGameView.setWinner(player);
 		mGameView.setEnabled(false);
 
 		setWinState(player);
 	}
 
+
+	
+	
+	/** class and methods implement progress bar */
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch(id) {
+		case DIALOG_KEY:
+			mProgressDialog = new ProgressDialog(this);
+			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			mProgressDialog.setMessage("Loading...");
+			return mProgressDialog;
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch(id) {
+		case DIALOG_KEY:
+			mProgressDialog.setProgress(0);
+			mProgressThread = new ProgressThread(handler);
+			mProgressThread.start();
+		}
+	}
+
+	// Define the Handler that receives messages from the thread and update the progress
+	final Handler handler = new Handler() {
+		public void handleMessage(Message msg) {
+			int total = msg.arg1;
+			mProgressDialog.setProgress(total);
+			if (total >= 100){
+				dismissDialog(DIALOG_KEY);
+				mProgressThread.setState(ProgressThread.STATE_DONE);
+			}
+		}
+	};
+
+
+	private class ProgressThread extends Thread {
+		Handler mHandler;
+		final static int STATE_DONE = 0;
+		final static int STATE_RUNNING = 1;
+		int mState;
+		int total;
+
+		ProgressThread(Handler h) {
+			mHandler = h;
+		}
+
+		public void run() {
+			mState = STATE_RUNNING;   
+			total = 0;
+			while (mState == STATE_RUNNING) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					Log.e("ERROR", "Thread Interrupted");
+				}
+				Message msg = mHandler.obtainMessage();
+				msg.arg1 = total;
+				mHandler.sendMessage(msg);
+				total++;
+			}
+		}
+
+		/* sets the current state for the thread,
+		 * used to stop the thread */
+		public void setState(int state) {
+			mState = state;
+		}
+	}
+	
+    /** class and methods implement progress bar */
+	
 }
 
 

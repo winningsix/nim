@@ -25,13 +25,6 @@
         android:layout_marginBottom="40dip"
         android:gravity="center"
         android:text="@string/continue_label"/>
-<!--     <Button
-        android:id="@+id/tutorial_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dip"
-        android:gravity="center"
-        android:text="@string/tutorial_label"/> -->
     <Button
         android:id="@+id/about_button"
         android:layout_width="fill_parent"
@@ -43,6 +36,7 @@
   <ImageView
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="20dip"
       android:src="@drawable/logo" />
 
 </LinearLayout>
